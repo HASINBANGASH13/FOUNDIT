@@ -6,7 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import notFound from "./middleware/notFoundMiddleware.js";
 import errorHandler from "./middleware/errorMiddleware.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
-
+import postRoutes from "./routes/postRoutes.js"
 dotenv.config();
 
 connectDB();
@@ -28,6 +28,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/posts", postRoutes);
 // 404 Middleware
 app.use(notFound);
 
