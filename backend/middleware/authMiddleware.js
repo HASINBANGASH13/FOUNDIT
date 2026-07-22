@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
-const protect = asyncHandler(async (req, res, next) => {
+const authenticateUser = asyncHandler(async (req, res, next) => {
     let token;
 
     // Check if Authorization header exists
@@ -34,4 +34,4 @@ const protect = asyncHandler(async (req, res, next) => {
 });
 
 
-export default protect;
+export default authenticateUser;
