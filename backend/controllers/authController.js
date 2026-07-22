@@ -89,9 +89,34 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 
 export const getUserProfile = asyncHandler(async (req, res) => {
-    res.json({ message: "Coming soon..." });
+    res.status(200).json({
+        success: true,
+        data: req.user,
+    });
 });
 
 export const updateUserProfile = asyncHandler(async (req, res) => {
-    res.json({ message: "Coming soon..." });
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+        res.status(404);
+        throw new Error("User not found.");
+    }
+
+    user.name = req.body.name || user.name;
+    user.phone = req.body.phone || user.phone;
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+        success: true,
+        message: "Profile updated successfully.",
+        data: {
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            phone: updatedUser.phone,
+            role: updatedUser.role,
+        },
+    });
 });

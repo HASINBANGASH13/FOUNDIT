@@ -5,6 +5,7 @@ import {
     getUserProfile,
     updateUserProfile,
 } from "../controllers/authController.js";
+import protect from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 
 // Protected Routes
-router.get("/profile", getUserProfile);
-router.put("/profile", updateUserProfile);
+router.get("/profile", protect, getUserProfile);
+router.put("/profile", protect, updateUserProfile);
 
 export default router;
