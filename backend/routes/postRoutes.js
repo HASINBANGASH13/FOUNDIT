@@ -1,5 +1,6 @@
 import express from "express";
-import { createPost,   getPosts, getPostById, } from "../controllers/postController.js";
+import { createPost, getPosts, getPostById, updatePost, } 
+from "../controllers/postController.js";
 import authenticateUser from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -10,5 +11,8 @@ router
     .get(getPosts)
     .post(authenticateUser, createPost);
 
-    router.get("/:id", getPostById);
+    router
+    .route("/:id")
+    .get(getPostById)
+    .put(authenticateUser, updatePost);
 export default router;

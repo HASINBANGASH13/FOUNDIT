@@ -150,3 +150,63 @@ export const getPostById = asyncHandler(async (req, res) => {
         data: post,
     });
 });
+
+export const updatePost = asyncHandler(async (req, res) => {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+        res.status(404);
+        throw new Error("Post not found.");
+    }
+
+    // Check ownership or admin
+    if (
+        post.user.toString() !== req.user._id.toString() &&
+        req.user.role !== "admin"
+    ) {
+        res.status(403);
+        throw new Error("You are not authorized to update this post.");
+    }
+
+    const {
+        title,
+        description,
+        type,
+        category,
+        location,
+        contactNumber,
+        date,
+        status,
+    } = req.body;
+
+    // If category is being changed, verify it exists
+    if (category) {
+        const categoryExists = await Category.findById(category);
+
+        if (!categoryExists) {
+            res.status(404);
+            throw new Error("Category not found.");
+        }
+
+        post.category = category;
+    }
+
+    post.title = title || post.title;
+    post.description = description || post.description;
+    post.type = type || post.type;
+    post.location = location || post.location;
+    post.contactNumber = contactNumber || post.contactNumber;
+    post.date = date || post.date;
+    post.status = status || post.status;
+
+    const updatedPost = await post.save();
+
+    await updatedPost.populate("category", "name");
+    await updatedPost.populate("user", "name email phone");
+
+    res.status(200).json({
+        success: true,
+        message: "Post updated successfully.",
+        data: updatedPost,
+    });
+});
