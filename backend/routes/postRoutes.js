@@ -1,5 +1,5 @@
 import express from "express";
-import { createPost, getPosts, getPostById, updatePost, } 
+import { createPost, getPosts, getPostById, updatePost,deletePost } 
 from "../controllers/postController.js";
 import authenticateUser from "../middleware/authMiddleware.js";
 
@@ -14,5 +14,6 @@ router
     router
     .route("/:id")
     .get(getPostById)
-    .put(authenticateUser, updatePost);
+    .put(authenticateUser, updatePost)
+    .delete(authenticateUser, deletePost);
 export default router;

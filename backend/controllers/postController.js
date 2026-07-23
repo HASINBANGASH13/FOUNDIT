@@ -210,3 +210,28 @@ export const updatePost = asyncHandler(async (req, res) => {
         data: updatedPost,
     });
 });
+
+export const deletePost = asyncHandler(async (req, res) => {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+        res.status(404);
+        throw new Error("Post not found.");
+    }
+
+    // Owner or Admin
+    if (
+        post.user.toString() !== req.user._id.toString() &&
+        req.user.role !== "admin"
+    ) {
+        res.status(403);
+        throw new Error("You are not authorized to delete this post.");
+    }
+
+    await post.deleteOne();
+
+    res.status(200).json({
+        success: true,
+        message: "Post deleted successfully.",
+    });
+});
