@@ -235,3 +235,40 @@ export const deletePost = asyncHandler(async (req, res) => {
         message: "Post deleted successfully.",
     });
 });
+
+export const resolvePost = asyncHandler(async (req, res) => {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+        res.status(404);
+        throw new Error("Post not found.");
+    }
+
+    // Owner or Admin
+    if (
+        post.user.toString() !== req.user._id.toString() &&
+        req.user.role !== "admin"
+    ) {
+        res.status(403);
+        throw new Error("You are not authorized to update this post.");
+    }
+
+    // Already resolved
+    if (post.status === "resolved") {
+        res.status(400);
+        throw new Error("Post is already resolved.");
+    }
+
+    post.status = "resolved";
+
+    await post.save();
+
+    await post.populate("category", "name");
+    await post.populate("user", "name email phone");
+
+    res.status(200).json({
+        success: true,
+        message: "Post marked as resolved.",
+        data: post,
+    });
+});
