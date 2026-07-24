@@ -8,4 +8,4 @@ const router = express.Router();
 router.get("/my-posts", authenticateUser, getMyPosts);
 router.get("/summary", authenticateUser, getDashboardSummary);
 
-export default authenticateUser;
+export default router;
