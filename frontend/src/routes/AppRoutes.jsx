@@ -12,7 +12,7 @@ import CreatePost from "../pages/posts/CreatePost";
 import EditPost from "../pages/posts/EditPost";
 import PostDetails from "../pages/posts/PostDetails";
 import NotFound from "../pages/NotFound";
-
+import MyPosts from "../pages/dashboard/MyPosts";
 function AppRoutes() {
     return (
         <BrowserRouter>
@@ -40,11 +40,21 @@ function AppRoutes() {
                         <EditPost />
                     </ProtectedRoute>} />
 
-                    <Route path="/post/:id" element={<ProtectedRoute>
+                    <Route path="/posts/:id" element={<ProtectedRoute>
                         <PostDetails />
                     </ProtectedRoute>} />
+                    <Route
+                    path="/my-posts"
+                    element={
+                        <ProtectedRoute>
+                            <MyPosts />
+                        </ProtectedRoute>
+                    }
+                />
 
                 </Route>
+
+                
 
                 <Route path="*" element={<NotFound />} />
 

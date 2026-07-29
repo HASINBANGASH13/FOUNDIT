@@ -1,10 +1,28 @@
 import api from "./axios";
 
-export const getMyPosts = async () => {
+/*
+|--------------------------------------------------------------------------
+| Dashboard Summary
+|--------------------------------------------------------------------------
+*/
 
-    const { data } = await api.get(
-        "/dashboard/my-posts"
-    );
+export const getDashboardSummary = async () => {
+
+    const { data } = await api.get("/dashboard/summary");
+
+    return data;
+
+};
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard Recent Posts
+|--------------------------------------------------------------------------
+*/
+
+export const getDashboardPosts = async () => {
+
+    const { data } = await api.get("/dashboard/my-posts");
 
     return data;
 

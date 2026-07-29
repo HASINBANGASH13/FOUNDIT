@@ -3,25 +3,34 @@ import Category from "../models/Category.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 export const createPost = asyncHandler(async (req, res) => {
+
     const {
         title,
         description,
         type,
         category,
-        location,
+        city,
+        area,
+        address,
         contactNumber,
         date,
     } = req.body;
 
-    // Validate required fields
+    // Build location object from frontend fields
+    const location = {
+        city,
+        area,
+        address,
+    };
+
+    // Validation
     if (
         !title ||
         !description ||
         !type ||
         !category ||
-        !location ||
-        !location.city ||
-        !location.area ||
+        !city ||
+        !area ||
         !contactNumber ||
         !date
     ) {
@@ -29,13 +38,13 @@ export const createPost = asyncHandler(async (req, res) => {
         throw new Error("Please fill all required fields.");
     }
 
-    // Check valid type
+    // Validate type
     if (!["lost", "found"].includes(type)) {
         res.status(400);
         throw new Error("Invalid post type.");
     }
 
-    // Check category exists
+    // Check category
     const categoryExists = await Category.findById(category);
 
     if (!categoryExists) {
@@ -43,28 +52,39 @@ export const createPost = asyncHandler(async (req, res) => {
         throw new Error("Category not found.");
     }
 
+    // Image path
+    let image = "";
+
+    if (req.file) {
+        image = `/uploads/${req.file.filename}`;
+    }
+
     // Create post
     const post = await Post.create({
+
         title,
         description,
         type,
         category,
+        image,
         location,
         contactNumber,
         date,
         user: req.user._id,
+
     });
 
-
-    // Populate references
     await post.populate("category", "name");
     await post.populate("user", "name email phone");
 
     res.status(201).json({
+
         success: true,
         message: "Post created successfully.",
         data: post,
+
     });
+
 });
 
 export const getPosts = asyncHandler(async (req, res) => {
@@ -152,6 +172,7 @@ export const getPostById = asyncHandler(async (req, res) => {
 });
 
 export const updatePost = asyncHandler(async (req, res) => {
+
     const post = await Post.findById(req.params.id);
 
     if (!post) {
@@ -159,7 +180,7 @@ export const updatePost = asyncHandler(async (req, res) => {
         throw new Error("Post not found.");
     }
 
-    // Check ownership or admin
+    // Owner or Admin
     if (
         post.user.toString() !== req.user._id.toString() &&
         req.user.role !== "admin"
@@ -168,7 +189,7 @@ export const updatePost = asyncHandler(async (req, res) => {
         throw new Error("You are not authorized to update this post.");
     }
 
-    const {
+    let {
         title,
         description,
         type,
@@ -179,8 +200,14 @@ export const updatePost = asyncHandler(async (req, res) => {
         status,
     } = req.body;
 
-    // If category is being changed, verify it exists
+    // If location comes as FormData string
+    if (typeof location === "string") {
+        location = JSON.parse(location);
+    }
+
+    // Check category
     if (category) {
+
         const categoryExists = await Category.findById(category);
 
         if (!categoryExists) {
@@ -189,6 +216,14 @@ export const updatePost = asyncHandler(async (req, res) => {
         }
 
         post.category = category;
+
+    }
+
+    // Update image
+    if (req.file) {
+
+        post.image = `/uploads/${req.file.filename}`;
+
     }
 
     post.title = title || post.title;
@@ -205,10 +240,13 @@ export const updatePost = asyncHandler(async (req, res) => {
     await updatedPost.populate("user", "name email phone");
 
     res.status(200).json({
+
         success: true,
         message: "Post updated successfully.",
         data: updatedPost,
+
     });
+
 });
 
 export const deletePost = asyncHandler(async (req, res) => {
@@ -271,4 +309,20 @@ export const resolvePost = asyncHandler(async (req, res) => {
         message: "Post marked as resolved.",
         data: post,
     });
+});
+
+export const getMyPosts = asyncHandler(async (req, res) => {
+
+    const posts = await Post.find({
+        user: req.user._id,
+    })
+        .populate("category", "name")
+        .sort({ createdAt: -1 });
+
+    res.status(200).json({
+        success: true,
+        count: posts.length,
+        data: posts,
+    });
+
 });

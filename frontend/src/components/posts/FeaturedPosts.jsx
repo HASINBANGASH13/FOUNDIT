@@ -1,103 +1,106 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import {
-    Heart,
-    MapPin,
-    Clock3,
-    ArrowRight,
-    ImageOff,
-} from "lucide-react";
 
 import { getPosts } from "../../api/postApi";
+import { getCategories } from "../../api/categoryApi";
+
+import PostCard from "./PostCard";
+import SearchFilter from "../home/SearchFilter";
 
 function FeaturedPosts() {
+
     const [posts, setPosts] = useState([]);
+    const [categories, setCategories] = useState([]);
+
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+
+    const [filters, setFilters] = useState({
+
+        keyword: "",
+        category: "",
+        type: "",
+        status: "",
+        city: "",
+
+    });
+
+    // ===========================
+    // Load Categories
+    // ===========================
 
     useEffect(() => {
-        const fetchPosts = async () => {
+
+        const fetchCategories = async () => {
+
             try {
-                const res = await getPosts({
-                    limit: 6,
-                });
 
-                // Backend returns:
-                // {
-                //    success:true,
-                //    data:[]
-                // }
+                const res = await getCategories();
 
-                setPosts(res.data);
+                setCategories(res.data);
 
-            } catch (err) {
-                console.error(err);
-                setError("Failed to load posts.");
-            } finally {
-                setLoading(false);
+            } catch (error) {
+
+                console.error(error);
+
             }
+
         };
 
-        fetchPosts();
+        fetchCategories();
+
     }, []);
 
-    if (loading) {
-        return (
-            <section className="py-28 bg-white">
+    // ===========================
+    // Load Posts
+    // ===========================
 
-                <div className="max-w-7xl mx-auto px-6">
+    useEffect(() => {
 
-                    <h2 className="text-center text-4xl font-bold">
+        const timer = setTimeout(() => {
 
-                        Loading Posts...
+            fetchPosts();
 
-                    </h2>
+        }, 400);
 
-                </div>
+        return () => clearTimeout(timer);
 
-            </section>
-        );
-    }
+    }, [filters]);
 
-    if (error) {
-        return (
-            <section className="py-28">
+    const fetchPosts = async () => {
 
-                <div className="text-center text-red-500 text-xl">
+        try {
 
-                    {error}
+            setLoading(true);
+            console.log("Filters:", filters);
+            const res = await getPosts({
 
-                </div>
+                page: 1,
+                limit: 6,
+                sort: "newest",
 
-            </section>
-        );
-    }
+                keyword: filters.keyword,
+                category: filters.category,
+                type: filters.type,
+                status: filters.status,
+                city: filters.city,
 
-    if (posts.length === 0) {
-        return (
-            <section className="py-28">
+            });
+            console.log("API Response:", res);
+            setPosts(res.data);
 
-                <div className="text-center">
+        } catch (error) {
 
-                    <h2 className="text-4xl font-bold">
+            console.error(error);
 
-                        No Posts Found
+        } finally {
 
-                    </h2>
+            setLoading(false);
 
-                    <p className="text-slate-500 mt-3">
+        }
 
-                        Create the first lost or found post.
-
-                    </p>
-
-                </div>
-
-            </section>
-        );
-    }
+    };
 
     return (
+
         <section className="py-28 bg-white">
 
             <div className="max-w-7xl mx-auto px-6">
@@ -106,165 +109,100 @@ function FeaturedPosts() {
 
                 <div className="text-center">
 
-                    <span className="bg-red-100 text-red-600 px-5 py-2 rounded-full font-semibold">
+                    <span className="inline-flex rounded-full bg-red-100 px-5 py-2 text-red-600 font-semibold">
 
                         Latest Posts
 
                     </span>
 
-                    <h2 className="text-5xl font-black mt-6">
+                    <h2 className="mt-6 text-5xl font-black text-slate-900">
 
                         Recently Lost & Found
 
                     </h2>
 
-                    <p className="mt-5 text-slate-500 text-lg">
+                    <p className="mt-5 text-lg text-slate-500">
 
-                        Recently published posts from our community.
+                        Search and filter community posts instantly.
 
                     </p>
 
                 </div>
 
-                {/* Cards */}
+                {/* Search */}
 
-                <div className="grid lg:grid-cols-3 gap-8 mt-20">
+                <SearchFilter
 
-                    {posts.map((post) => (
+                    filters={filters}
 
-                        <div
-                            key={post._id}
-                            className="group rounded-3xl overflow-hidden bg-white shadow-lg border border-slate-200 hover:-translate-y-3 hover:shadow-2xl transition duration-500"
-                        >
+                    setFilters={setFilters}
 
-                            {/* Image */}
+                    categories={categories}
 
-                            <div className="relative h-64 overflow-hidden">
+                />
 
-                                {post.image?.url ? (
+                {/* Loading */}
 
-                                    <img
-                                        src={post.image.url}
-                                        alt={post.title}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
-                                    />
+                {loading && (
 
-                                ) : (
+                    <div className="flex justify-center mt-16">
 
-                                    <div className="w-full h-full bg-slate-100 flex flex-col items-center justify-center text-slate-400">
+                        <div className="w-14 h-14 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
 
-                                        <ImageOff size={40} />
+                    </div>
 
-                                        <p className="mt-3">
+                )}
 
-                                            No Image
+                {/* Empty */}
 
-                                        </p>
+                {!loading && posts.length === 0 && (
 
-                                    </div>
+                    <div className="mt-20 text-center">
 
-                                )}
+                        <h2 className="text-3xl font-black">
 
-                                {/* Type Badge */}
+                            No Posts Found
 
-                                <span
-                                    className={`absolute left-5 top-5 px-4 py-2 rounded-full text-white font-semibold ${
-                                        post.type === "lost"
-                                            ? "bg-red-500"
-                                            : "bg-green-500"
-                                    }`}
-                                >
+                        </h2>
 
-                                    {post.type.toUpperCase()}
+                        <p className="mt-4 text-slate-500">
 
-                                </span>
+                            Try changing the search filters.
 
-                                {/* Heart */}
+                        </p>
 
-                                <button className="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/90 backdrop-blur flex items-center justify-center hover:bg-red-500 hover:text-white transition">
+                    </div>
 
-                                    <Heart size={18} />
+                )}
 
-                                </button>
+                {/* Posts */}
 
-                            </div>
+                {!loading && posts.length > 0 && (
 
-                            {/* Content */}
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mt-16">
 
-                            <div className="p-7">
+                        {posts.map((post) => (
 
-                                {/* Category */}
+                            <PostCard
 
-                                {post.category && (
+                                key={post._id}
 
-                                    <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold mb-4">
+                                post={post}
 
-                                        {post.category.name}
+                            />
 
-                                    </span>
+                        ))}
 
-                                )}
+                    </div>
 
-                                <h3 className="text-2xl font-bold">
-
-                                    {post.title}
-
-                                </h3>
-
-                                <div className="mt-5 flex items-center gap-2 text-slate-500">
-
-                                    <MapPin size={18} />
-
-                                    {post.location?.city}, {post.location?.area}
-
-                                </div>
-
-                                <div className="mt-3 flex items-center gap-2 text-slate-500">
-
-                                    <Clock3 size={18} />
-
-                                    {new Date(post.createdAt).toLocaleDateString()}
-
-                                </div>
-
-                                <div className="mt-3 text-slate-700">
-
-                                    Posted by{" "}
-
-                                    <span className="font-semibold">
-
-                                        {post.user?.name}
-
-                                    </span>
-
-                                </div>
-
-                                <Link
-                                    to={`/posts/${post._id}`}
-                                    className="mt-8 inline-flex items-center gap-2 text-blue-600 font-semibold group"
-                                >
-
-                                    View Details
-
-                                    <ArrowRight
-                                        size={18}
-                                        className="group-hover:translate-x-2 transition"
-                                    />
-
-                                </Link>
-
-                            </div>
-
-                        </div>
-
-                    ))}
-
-                </div>
+                )}
 
             </div>
 
         </section>
+
     );
+
 }
 
 export default FeaturedPosts;

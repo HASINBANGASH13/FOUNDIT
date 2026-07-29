@@ -1,6 +1,12 @@
 import api from "./axios";
 
-export const getPosts = async (params = {}) => {
+/*
+|--------------------------------------------------------------------------
+| Get Posts
+|--------------------------------------------------------------------------
+*/
+
+export const getPosts = async (params) => {
 
     const { data } = await api.get("/posts", {
         params,
@@ -10,6 +16,20 @@ export const getPosts = async (params = {}) => {
 
 };
 
+export const getMyPosts = async () => {
+
+    const { data } = await api.get("/posts/my-posts");
+
+    return data;
+
+};
+
+/*
+|--------------------------------------------------------------------------
+| Get Single Post
+|--------------------------------------------------------------------------
+*/
+
 export const getPost = async (id) => {
 
     const { data } = await api.get(`/posts/${id}`);
@@ -17,6 +37,12 @@ export const getPost = async (id) => {
     return data;
 
 };
+
+/*
+|--------------------------------------------------------------------------
+| Create Post
+|--------------------------------------------------------------------------
+*/
 
 export const createPost = async (formData) => {
 
@@ -34,21 +60,40 @@ export const createPost = async (formData) => {
 
 };
 
+/*
+|--------------------------------------------------------------------------
+| Update Post
+|--------------------------------------------------------------------------
+*/
+
 export const updatePost = async (id, formData) => {
 
     const { data } = await api.put(
+
         `/posts/${id}`,
+
         formData,
+
         {
+
             headers: {
+
                 "Content-Type": "multipart/form-data",
+
             },
+
         }
+
     );
 
     return data;
 
 };
+/*
+|--------------------------------------------------------------------------
+| Delete Post
+|--------------------------------------------------------------------------
+*/
 
 export const deletePost = async (id) => {
 
@@ -60,7 +105,7 @@ export const deletePost = async (id) => {
 
 export const resolvePost = async (id) => {
 
-    const { data } = await api.patch(
+    const { data } = await api.put(
         `/posts/${id}/resolve`
     );
 

@@ -1,44 +1,86 @@
-import { Link, NavLink } from "react-router-dom";
+import { useState } from "react";
+
 import {
-    Search,
-    Plus,
+    Link,
+    NavLink,
+    useNavigate,
+} from "react-router-dom";
+
+import {
     Menu,
+    X,
+    Plus,
+    LayoutDashboard,
+    FolderOpen,
+    LogOut,
+    User,
+    LogIn,
+    UserPlus,
+    ShieldCheck,
 } from "lucide-react";
 
+import { toast } from "react-toastify";
+
+import useAuth from "../../hooks/useAuth";
+
 function Navbar() {
+
+    const navigate = useNavigate();
+
+    const { user, logout } = useAuth();
+
+    const [mobileMenu, setMobileMenu] = useState(false);
+
+    const handleLogout = () => {
+
+        logout();
+
+        toast.success("Logged out successfully");
+
+        navigate("/login");
+
+    };
+
+    const closeMenu = () => {
+
+        setMobileMenu(false);
+
+    };
+
+    const navClass = ({ isActive }) =>
+
+        `transition font-semibold ${
+            isActive
+                ? "text-sky-600"
+                : "text-slate-700 hover:text-sky-600"
+        }`;
+
     return (
+
         <header className="sticky top-0 z-50">
 
-            {/* Blur Background */}
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-xl border-b border-slate-200"></div>
 
-            <div className="absolute inset-0 bg-white/70 backdrop-blur-2xl border-b border-white/40" />
+            <div className="relative max-w-7xl mx-auto px-6">
 
-            <div className="relative max-w-7xl mx-auto">
-
-                <div className="h-24 flex items-center justify-between px-6">
+                <div className="h-20 flex items-center justify-between">
 
                     {/* Logo */}
 
                     <Link
                         to="/"
-                        className="flex items-center gap-4 group"
+                        className="flex items-center gap-3"
                     >
 
-                        <div className="relative">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-sky-600 to-indigo-600 text-white flex items-center justify-center text-2xl font-black shadow-lg">
 
-                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 blur-md opacity-70 group-hover:opacity-100 transition" />
-
-                            <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 flex items-center justify-center text-white font-black text-2xl shadow-xl">
-
-                                F
-
-                            </div>
+                            F
 
                         </div>
 
                         <div>
 
-                            <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                            <h1 className="text-2xl font-black text-slate-900">
 
                                 FoundIt
 
@@ -58,88 +100,240 @@ function Navbar() {
 
                     <nav className="hidden lg:flex items-center gap-8">
 
-                        {[
-                            "Home",
-                            "Browse",
-                            "Categories",
-                            "About",
-                        ].map((item) => (
+                        <NavLink
+                            to="/"
+                            className={navClass}
+                        >
+                            Home
+                        </NavLink>
 
-                            <NavLink
-                                key={item}
-                                to="/"
-                                className="relative font-medium text-slate-700 hover:text-blue-600 transition after:absolute after:left-0 after:-bottom-2 after:h-[2px] after:w-0 hover:after:w-full after:bg-blue-600 after:transition-all"
-                            >
+                        {user && (
 
-                                {item}
+                            <>
+                                <NavLink
+                                    to="/dashboard"
+                                    className={navClass}
+                                >
+                                    Dashboard
+                                </NavLink>
 
-                            </NavLink>
+                                <NavLink
+                                    to="/my-posts"
+                                    className={navClass}
+                                >
+                                    My Posts
+                                </NavLink>
+                            </>
 
-                        ))}
+                        )}
 
                     </nav>
 
                     {/* Right Side */}
 
-                    <div className="flex items-center gap-4">
+                    <div className="hidden lg:flex items-center gap-4">
 
-                        {/* Search */}
+                        {user ? (
+                            <>
+                                {/* Create Post Button */}
 
-                        <div className="hidden xl:flex items-center bg-white shadow-lg border border-slate-200 rounded-full px-5 h-12 w-[320px]">
+                                <Link
+                                    to="/create-post"
+                                    className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 text-white font-semibold shadow-lg hover:scale-105 transition"
+                                >
+                                    <Plus size={18} />
+                                    Create Post
+                                </Link>
 
-                            <Search
-                                size={18}
-                                className="text-slate-400"
-                            />
+                                {/* User */}
 
-                            <input
-                                type="text"
-                                placeholder="Search lost items..."
-                                className="flex-1 bg-transparent outline-none px-3 text-sm"
-                            />
+                                <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm">
 
-                        </div>
+                                    <div className="w-11 h-11 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold text-lg">
 
-                        {/* Add Button */}
+                                        {user.name?.charAt(0).toUpperCase()}
 
-                        <Link
-                            to="/create-post"
-                            className="hidden md:flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white px-6 py-3 font-semibold shadow-xl hover:shadow-blue-300 hover:-translate-y-1 transition-all duration-300"
-                        >
+                                    </div>
 
-                            <Plus size={18} />
+                                    <div>
 
-                            Add Post
+                                        <div className="font-bold text-slate-800">
 
-                        </Link>
+                                            {user.name}
 
-                        {/* Login */}
+                                        </div>
 
-                        <Link
-                            to="/login"
-                            className="hidden md:flex px-6 py-3 rounded-full border border-slate-300 bg-white hover:bg-slate-50 hover:shadow-lg transition"
-                        >
+                                        <div className="flex items-center gap-2">
 
-                            Login
+                                            <span className="text-xs text-slate-500">
 
-                        </Link>
+                                                {user.email}
 
-                        {/* Mobile */}
+                                            </span>
 
-                        <button className="lg:hidden w-12 h-12 rounded-xl border border-slate-200 bg-white flex items-center justify-center">
+                                            {user.role === "admin" && (
 
-                            <Menu />
+                                                <span className="flex items-center gap-1 text-[10px] bg-red-100 text-red-600 rounded-full px-2 py-1">
 
-                        </button>
+                                                    <ShieldCheck size={12} />
+
+                                                    Admin
+
+                                                </span>
+
+                                            )}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <button
+                                    onClick={handleLogout}
+                                    className="flex items-center gap-2 px-5 py-3 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 transition"
+                                >
+                                    <LogOut size={18} />
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link
+                                    to="/login"
+                                    className="flex items-center gap-2 px-5 py-3 rounded-xl border border-slate-300 hover:bg-slate-100 transition"
+                                >
+                                    <LogIn size={18} />
+                                    Login
+                                </Link>
+
+                                <Link
+                                    to="/register"
+                                    className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-lg hover:scale-105 transition"
+                                >
+                                    <UserPlus size={18} />
+                                    Register
+                                </Link>
+                            </>
+                        )}
 
                     </div>
 
+                    {/* Mobile Menu Button */}
+
+                    <button
+                        onClick={() => setMobileMenu(!mobileMenu)}
+                        className="lg:hidden w-12 h-12 rounded-xl border border-slate-200 bg-white flex items-center justify-center"
+                    >
+                        {mobileMenu ? <X /> : <Menu />}
+                    </button>
+
                 </div>
+
+                {/* Mobile Menu */}
+
+                {mobileMenu && (
+
+                    <div className="lg:hidden bg-white border-t border-slate-200 py-5 space-y-3">
+
+                        <NavLink
+                            to="/"
+                            onClick={closeMenu}
+                            className="flex items-center gap-3 px-6 py-3 hover:bg-slate-100"
+                        >
+                            Home
+                        </NavLink>
+
+                        {user ? (
+                            <>
+                                <NavLink
+                                    to="/dashboard"
+                                    onClick={closeMenu}
+                                    className="flex items-center gap-3 px-6 py-3 hover:bg-slate-100"
+                                >
+                                    <LayoutDashboard size={18} />
+                                    Dashboard
+                                </NavLink>
+
+                                <NavLink
+                                    to="/my-posts"
+                                    onClick={closeMenu}
+                                    className="flex items-center gap-3 px-6 py-3 hover:bg-slate-100"
+                                >
+                                    <FolderOpen size={18} />
+                                    My Posts
+                                </NavLink>
+
+                                <NavLink
+                                    to="/create-post"
+                                    onClick={closeMenu}
+                                    className="flex items-center gap-3 px-6 py-3 hover:bg-slate-100"
+                                >
+                                    <Plus size={18} />
+                                    Create Post
+                                </NavLink>
+
+                                <div className="border-t border-slate-200 my-2"></div>
+
+                                <div className="px-6 py-2">
+
+                                    <div className="font-bold">
+
+                                        {user.name}
+
+                                    </div>
+
+                                    <div className="text-sm text-slate-500">
+
+                                        {user.email}
+
+                                    </div>
+
+                                </div>
+
+                                <button
+                                    onClick={() => {
+                                        closeMenu();
+                                        handleLogout();
+                                    }}
+                                    className="w-full flex items-center gap-3 px-6 py-3 text-red-600 hover:bg-red-50"
+                                >
+                                    <LogOut size={18} />
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <NavLink
+                                    to="/login"
+                                    onClick={closeMenu}
+                                    className="flex items-center gap-3 px-6 py-3 hover:bg-slate-100"
+                                >
+                                    <LogIn size={18} />
+                                    Login
+                                </NavLink>
+
+                                <NavLink
+                                    to="/register"
+                                    onClick={closeMenu}
+                                    className="flex items-center gap-3 px-6 py-3 hover:bg-slate-100"
+                                >
+                                    <UserPlus size={18} />
+                                    Register
+                                </NavLink>
+                            </>
+                        )}
+
+                    </div>
+
+                )}
 
             </div>
 
         </header>
+
     );
+
 }
 
 export default Navbar;
