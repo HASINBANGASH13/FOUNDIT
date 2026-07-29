@@ -100,109 +100,61 @@ function FeaturedPosts() {
     };
 
     return (
-
-        <section className="py-28 bg-white">
-
+        <section className="py-28 bg-[#090a11]">
             <div className="max-w-7xl mx-auto px-6">
-
                 {/* Heading */}
-
                 <div className="text-center">
-
-                    <span className="inline-flex rounded-full bg-red-100 px-5 py-2 text-red-600 font-semibold">
-
+                    <span className="inline-flex rounded-full bg-white/5 px-5 py-2 text-white/80 font-semibold backdrop-blur">
                         Latest Posts
-
                     </span>
 
-                    <h2 className="mt-6 text-5xl font-black text-slate-900">
-
+                    <h2 className="mt-6 text-5xl font-black text-white">
                         Recently Lost & Found
-
                     </h2>
 
-                    <p className="mt-5 text-lg text-slate-500">
-
+                    <p className="mt-5 text-lg text-slate-300">
                         Search and filter community posts instantly.
-
                     </p>
-
                 </div>
 
                 {/* Search */}
-
                 <SearchFilter
-
                     filters={filters}
-
                     setFilters={setFilters}
-
                     categories={categories}
-
                 />
 
                 {/* Loading */}
-
                 {loading && (
-
                     <div className="flex justify-center mt-16">
-
-                        <div className="w-14 h-14 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
-
+                        <div className="w-14 h-14 border-4 border-slate-600 border-t-transparent rounded-full animate-spin"></div>
                     </div>
-
                 )}
 
                 {/* Empty */}
-
                 {!loading && posts.length === 0 && (
-
                     <div className="mt-20 text-center">
-
-                        <h2 className="text-3xl font-black">
-
+                        <h2 className="text-3xl font-black text-white">
                             No Posts Found
-
                         </h2>
 
-                        <p className="mt-4 text-slate-500">
-
+                        <p className="mt-4 text-slate-400">
                             Try changing the search filters.
-
                         </p>
-
                     </div>
-
                 )}
 
                 {/* Posts */}
-
                 {!loading && posts.length > 0 && (
-
                     <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mt-16">
-
                         {posts.map((post) => (
-
-                            <PostCard
-
-                                key={post._id}
-
-                                post={post}
-
-                            />
-
+                            <PostCard key={post._id} post={post} />
                         ))}
-
                     </div>
-
                 )}
-
             </div>
-
         </section>
-
     );
-
 }
 
 export default FeaturedPosts;

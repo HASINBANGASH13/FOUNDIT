@@ -38,11 +38,10 @@ const features = [
 
 function WhyChoose() {
     return (
-        <section className="py-28 bg-slate-900 text-white">
+        <section className="py-28 bg-[#090a11] text-white">
             <div className="max-w-7xl mx-auto px-6">
-
                 <div className="text-center">
-                    <span className="inline-block bg-cyan-500/20 text-cyan-300 px-5 py-2 rounded-full font-semibold">
+                    <span className="inline-block bg-white/5 text-white/80 px-5 py-2 rounded-full font-semibold backdrop-blur">
                         Why Choose Us
                     </span>
 
@@ -57,7 +56,6 @@ function WhyChoose() {
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
-
                     {features.map((item, index) => {
                         const Icon = item.icon;
 
@@ -72,7 +70,7 @@ function WhyChoose() {
                                     <Icon size={34} />
                                 </div>
 
-                                <h3 className="mt-8 text-2xl font-bold">
+                                <h3 className="mt-8 text-2xl font-bold text-white">
                                     {item.title}
                                 </h3>
 
@@ -82,9 +80,7 @@ function WhyChoose() {
                             </div>
                         );
                     })}
-
                 </div>
-
             </div>
         </section>
     );

@@ -16,15 +16,15 @@ import {
 
 function Footer() {
     return (
-        <footer className="relative mt-24 overflow-hidden bg-slate-950 text-white">
+        <footer className="relative mt-24 overflow-hidden bg-[#07080e] text-white">
 
             {/* Background Glow */}
 
-            <div className="absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-blue-600/20 blur-[120px]" />
+            <div className="absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-white/10 blur-3xl" />
 
-            {/* Gradient Line */}
+            {/* Divider Line */}
 
-            <div className="h-[2px] w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600" />
+            <div className="h-[2px] w-full bg-white/10" />
 
             <div className="relative max-w-7xl mx-auto px-6 py-20">
 
@@ -34,7 +34,7 @@ function Footer() {
 
                     <div>
 
-                        <h2 className="text-4xl font-black bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
+                        <h2 className="text-4xl font-black text-white">
 
                             FoundIt
 
@@ -48,7 +48,7 @@ function Footer() {
 
                         <div className="flex gap-4 mt-8">
 
-    <button className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 border border-slate-800 hover:border-blue-500 hover:bg-blue-600 transition-all duration-300 hover:-translate-y-1">
+    <button className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1">
         <FaFacebookF />
     </button>
 

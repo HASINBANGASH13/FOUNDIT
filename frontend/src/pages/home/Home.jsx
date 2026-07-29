@@ -10,17 +10,15 @@ import CTA from "../../components/cta/CTA";
 function Home() {
     return (
         <>
-            < Hero/>
-             <HeroStats />
-             <FeaturedCategories />
-             <FeaturedPosts />
-             <HowItWorks />
-             <WhyChoose />
-              <Testimonials />
-                <Statistics />
-                <CTA />
-
-
+            <Hero />
+            <HeroStats />
+            <FeaturedCategories />
+            <FeaturedPosts />
+            <HowItWorks />
+            <WhyChoose />
+            <Testimonials />
+            <Statistics />
+            <CTA />
         </>
     );
 }

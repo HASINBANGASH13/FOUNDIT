@@ -4,16 +4,16 @@ import Footer from "../components/layout/Footer";
 
 function MainLayout() {
     return (
-        <div className="min-h-screen flex flex-col bg-slate-100">
-
+        <div className="min-h-screen flex flex-col bg-[#030409] text-white">
             <Navbar />
 
-            <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-8">
-                <Outlet />
+            <main className="flex-1 w-full">
+                <div className="max-w-7xl mx-auto w-full px-6 py-8">
+                    <Outlet />
+                </div>
             </main>
 
             <Footer />
-
         </div>
     );
 }
