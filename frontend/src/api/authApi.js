@@ -29,3 +29,13 @@ export const getProfile = async () => {
     return response.data;
 
 };
+export const updateProfile = async (body) => {
+
+    const response = await api.put(
+        "/auth/profile",
+        body
+    );
+
+    return response.data;
+
+};

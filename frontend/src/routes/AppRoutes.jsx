@@ -13,6 +13,7 @@ import EditPost from "../pages/posts/EditPost";
 import PostDetails from "../pages/posts/PostDetails";
 import NotFound from "../pages/NotFound";
 import MyPosts from "../pages/dashboard/MyPosts";
+import Profile from "../pages/profile/Profile";
 function AppRoutes() {
     return (
         <BrowserRouter>
@@ -27,6 +28,14 @@ function AppRoutes() {
 
                     <Route path="/register" element={<Register />} />
 
+                    <Route
+    path="/profile"
+    element={
+        <ProtectedRoute>
+            <Profile />
+        </ProtectedRoute>
+    }
+/>
                     <Route path="/dashboard" element={
                         <ProtectedRoute>
                             <Dashboard />

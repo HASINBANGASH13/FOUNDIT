@@ -13,10 +13,10 @@ import {
     LayoutDashboard,
     FolderOpen,
     LogOut,
-    User,
     LogIn,
     UserPlus,
     ShieldCheck,
+    UserCircle2,
 } from "lucide-react";
 
 import { toast } from "react-toastify";
@@ -147,47 +147,55 @@ function Navbar() {
 
                                 {/* User */}
 
-                                <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm">
+                                <Link
+    to="/profile"
+    className="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm hover:shadow-lg hover:border-sky-300 transition-all duration-300"
+>
 
-                                    <div className="w-11 h-11 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold text-lg">
+    <div className="w-11 h-11 rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg">
 
-                                        {user.name?.charAt(0).toUpperCase()}
+        {user.name?.charAt(0).toUpperCase()}
 
-                                    </div>
+    </div>
 
-                                    <div>
+    <div>
 
-                                        <div className="font-bold text-slate-800">
+        <div className="font-bold text-slate-800 flex items-center gap-2">
 
-                                            {user.name}
+            {user.name}
 
-                                        </div>
+            <UserCircle2
+                size={16}
+                className="text-sky-600"
+            />
 
-                                        <div className="flex items-center gap-2">
+        </div>
 
-                                            <span className="text-xs text-slate-500">
+        <div className="flex items-center gap-2">
 
-                                                {user.email}
+            <span className="text-xs text-slate-500">
 
-                                            </span>
+                {user.email}
 
-                                            {user.role === "admin" && (
+            </span>
 
-                                                <span className="flex items-center gap-1 text-[10px] bg-red-100 text-red-600 rounded-full px-2 py-1">
+            {user.role === "admin" && (
 
-                                                    <ShieldCheck size={12} />
+                <span className="flex items-center gap-1 text-[10px] bg-red-100 text-red-600 rounded-full px-2 py-1">
 
-                                                    Admin
+                    <ShieldCheck size={12} />
 
-                                                </span>
+                    Admin
 
-                                            )}
+                </span>
 
-                                        </div>
+            )}
 
-                                    </div>
+        </div>
 
-                                </div>
+    </div>
+
+</Link>
 
                                 <button
                                     onClick={handleLogout}
@@ -263,7 +271,14 @@ function Navbar() {
                                     <FolderOpen size={18} />
                                     My Posts
                                 </NavLink>
-
+                                <NavLink
+    to="/profile"
+    onClick={closeMenu}
+    className="flex items-center gap-3 px-6 py-3 hover:bg-slate-100"
+>
+    <UserCircle2 size={18} />
+    Profile
+</NavLink>
                                 <NavLink
                                     to="/create-post"
                                     onClick={closeMenu}
