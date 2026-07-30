@@ -12,13 +12,13 @@ function Home() {
         <>
             < Hero/>
              <HeroStats />
-             <FeaturedCategories />
+             {/* <FeaturedCategories /> */}
              <FeaturedPosts />
              <HowItWorks />
-             <WhyChoose />
+             {/* <WhyChoose />
               <Testimonials />
                 <Statistics />
-                <CTA />
+                <CTA /> */}
 
 
         </>

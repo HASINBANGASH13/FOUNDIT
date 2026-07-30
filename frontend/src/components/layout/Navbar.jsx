@@ -17,6 +17,7 @@ import {
     UserPlus,
     ShieldCheck,
     UserCircle2,
+    Settings,
 } from "lucide-react";
 
 import { toast } from "react-toastify";
@@ -49,10 +50,9 @@ function Navbar() {
 
     const navClass = ({ isActive }) =>
 
-        `transition font-semibold ${
-            isActive
-                ? "text-sky-600"
-                : "text-slate-700 hover:text-sky-600"
+        `transition font-semibold ${isActive
+            ? "text-sky-600"
+            : "text-slate-700 hover:text-sky-600"
         }`;
 
     return (
@@ -123,6 +123,24 @@ function Navbar() {
                                 >
                                     My Posts
                                 </NavLink>
+
+                                {user.role === "admin" && (
+
+                                    <NavLink
+                                        to="/admin"
+                                        className={({ isActive }) =>
+                                            `flex items-center gap-2 font-semibold transition ${isActive
+                                                ? "text-red-600"
+                                                : "text-slate-700 hover:text-red-600"
+                                            }`
+                                        }
+                                    >
+                                        <ShieldCheck size={18} />
+                                        Admin
+                                    </NavLink>
+
+                                )}
+
                             </>
 
                         )}
@@ -148,54 +166,54 @@ function Navbar() {
                                 {/* User */}
 
                                 <Link
-    to="/profile"
-    className="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm hover:shadow-lg hover:border-sky-300 transition-all duration-300"
->
+                                    to="/profile"
+                                    className="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm hover:shadow-lg hover:border-sky-300 transition-all duration-300"
+                                >
 
-    <div className="w-11 h-11 rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg">
+                                    <div className="w-11 h-11 rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg">
 
-        {user.name?.charAt(0).toUpperCase()}
+                                        {user.name?.charAt(0).toUpperCase()}
 
-    </div>
+                                    </div>
 
-    <div>
+                                    <div>
 
-        <div className="font-bold text-slate-800 flex items-center gap-2">
+                                        <div className="font-bold text-slate-800 flex items-center gap-2">
 
-            {user.name}
+                                            {user.name}
 
-            <UserCircle2
-                size={16}
-                className="text-sky-600"
-            />
+                                            <UserCircle2
+                                                size={16}
+                                                className="text-sky-600"
+                                            />
 
-        </div>
+                                        </div>
 
-        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2">
 
-            <span className="text-xs text-slate-500">
+                                            <span className="text-xs text-slate-500">
 
-                {user.email}
+                                                {user.email}
 
-            </span>
+                                            </span>
 
-            {user.role === "admin" && (
+                                            {user.role === "admin" && (
 
-                <span className="flex items-center gap-1 text-[10px] bg-red-100 text-red-600 rounded-full px-2 py-1">
+                                                <span className="flex items-center gap-1 text-[10px] bg-red-100 text-red-600 rounded-full px-2 py-1">
 
-                    <ShieldCheck size={12} />
+                                                    <ShieldCheck size={12} />
 
-                    Admin
+                                                    Admin
 
-                </span>
+                                                </span>
 
-            )}
+                                            )}
 
-        </div>
+                                        </div>
 
-    </div>
+                                    </div>
 
-</Link>
+                                </Link>
 
                                 <button
                                     onClick={handleLogout}
@@ -271,14 +289,26 @@ function Navbar() {
                                     <FolderOpen size={18} />
                                     My Posts
                                 </NavLink>
+                                {user.role === "admin" && (
+
+    <NavLink
+        to="/admin"
+        onClick={closeMenu}
+        className="flex items-center gap-3 px-6 py-3 hover:bg-slate-100"
+    >
+        <ShieldCheck size={18} />
+        Admin Panel
+    </NavLink>
+
+)}
                                 <NavLink
-    to="/profile"
-    onClick={closeMenu}
-    className="flex items-center gap-3 px-6 py-3 hover:bg-slate-100"
->
-    <UserCircle2 size={18} />
-    Profile
-</NavLink>
+                                    to="/profile"
+                                    onClick={closeMenu}
+                                    className="flex items-center gap-3 px-6 py-3 hover:bg-slate-100"
+                                >
+                                    <UserCircle2 size={18} />
+                                    Profile
+                                </NavLink>
                                 <NavLink
                                     to="/create-post"
                                     onClick={closeMenu}
