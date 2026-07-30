@@ -55,16 +55,23 @@ export const getAdminSummary = asyncHandler(async (req, res) => {
 
 export const getAllUsers = asyncHandler(async (req, res) => {
 
-    const users = await User.find()
-        .select("-password")
-        .sort({ createdAt: -1 });
+    const { keyword = "" } = req.query;
+
+    const users = await User.find({
+
+        name: {
+            $regex: keyword,
+            $options: "i",
+        },
+
+    })
+    .select("-password")
+    .sort({ createdAt: -1 });
 
     res.status(200).json({
 
         success: true,
-
         count: users.length,
-
         data: users,
 
     });
@@ -107,65 +114,25 @@ export const deleteUser = asyncHandler(async (req, res) => {
 
 export const getAllPosts = asyncHandler(async (req, res) => {
 
-    const {
-        keyword,
-        type,
-        status,
-        category,
-        page = 1,
-        limit = 10,
-    } = req.query;
+    const { keyword = "" } = req.query;
 
-    const query = {};
+    const posts = await Post.find({
 
-    if (keyword) {
-
-        query.title = {
+        title: {
             $regex: keyword,
             $options: "i",
-        };
+        },
 
-    }
-
-    if (type) {
-        query.type = type;
-    }
-
-    if (status) {
-        query.status = status;
-    }
-
-    if (category) {
-        query.category = category;
-    }
-
-    const skip = (page - 1) * limit;
-
-    const totalPosts = await Post.countDocuments(query);
-
-    const posts = await Post.find(query)
-
+    })
+        .populate("user", "name")
         .populate("category", "name")
-
-        .populate("user", "name email")
-
-        .sort({ createdAt: -1 })
-
-        .skip(skip)
-
-        .limit(Number(limit));
+        .sort({ createdAt: -1 });
 
     res.status(200).json({
 
         success: true,
 
         count: posts.length,
-
-        totalPosts,
-
-        totalPages: Math.ceil(totalPosts / limit),
-
-        currentPage: Number(page),
 
         data: posts,
 
