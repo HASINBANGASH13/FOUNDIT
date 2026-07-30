@@ -1,42 +1,4 @@
 @import "tailwindcss";
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-    width: 100%;
-    min-height: 100%;
-    font-family: Inter, sans-serif;
-    background-color: #f8fafc;
-}
-
 body {
-    color: #1e293b;
-}
-
-button {
-    cursor: pointer;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-img {
-    max-width: 100%;
-    display: block;
-}
-
-body{
-font-family:Inter,sans-serif;
-}
-
-h1,h2,h3,h4,h5,h6{
-font-family:Poppins,sans-serif;
+  zoom: 80%;
 }
