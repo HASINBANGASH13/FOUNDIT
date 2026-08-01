@@ -1,30 +1,38 @@
 import { useEffect, useState } from "react";
-
 import {
     Search,
     Trash2,
     ShieldCheck,
     User,
+    RefreshCw,
 } from "lucide-react";
-
 import { toast } from "react-toastify";
+
+import useAuth from "../../hooks/useAuth";
 
 import {
     getAllUsers,
     deleteUser,
+    updateUserRole,
 } from "../../api/adminApi";
 
 function AdminUsers() {
 
+    const { user: currentUser } = useAuth();
+
     const [users, setUsers] = useState([]);
-
     const [loading, setLoading] = useState(true);
-
     const [keyword, setKeyword] = useState("");
 
     useEffect(() => {
 
-        loadUsers();
+        const timer = setTimeout(() => {
+
+            loadUsers();
+
+        }, 300);
+
+        return () => clearTimeout(timer);
 
     }, [keyword]);
 
@@ -42,15 +50,11 @@ function AdminUsers() {
 
             setUsers(res.data);
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             console.log(error);
 
-        }
-
-        finally {
+        } finally {
 
             setLoading(false);
 
@@ -62,7 +66,7 @@ function AdminUsers() {
 
         const ok = window.confirm(
 
-            "Delete this user?"
+            "Are you sure you want to delete this user?"
 
         );
 
@@ -72,13 +76,11 @@ function AdminUsers() {
 
             await deleteUser(id);
 
-            toast.success("User deleted.");
+            toast.success("User deleted successfully.");
 
             loadUsers();
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             toast.error(
 
@@ -92,13 +94,37 @@ function AdminUsers() {
 
     };
 
+    const handleRoleChange = async (id, role) => {
+
+        try {
+
+            await updateUserRole(id, role);
+
+            toast.success("User role updated.");
+
+            loadUsers();
+
+        } catch (error) {
+
+            toast.error(
+
+                error.response?.data?.message ||
+
+                "Failed to update role."
+
+            );
+
+        }
+
+    };
+
     return (
 
         <div>
 
             {/* Header */}
 
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-10">
 
                 <div>
 
@@ -110,7 +136,7 @@ function AdminUsers() {
 
                     <p className="text-slate-500 mt-2">
 
-                        Search, manage and remove users.
+                        Search users, change roles and manage accounts.
 
                     </p>
 
@@ -119,27 +145,17 @@ function AdminUsers() {
                 <div className="relative">
 
                     <Search
-
                         size={18}
-
-                        className="absolute left-4 top-4 text-slate-400"
-
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                     />
 
                     <input
-
                         value={keyword}
-
                         onChange={(e) =>
-
                             setKeyword(e.target.value)
-
                         }
-
                         placeholder="Search users..."
-
-                        className="w-80 h-12 rounded-xl border pl-12"
-
+                        className="w-80 h-12 rounded-xl border border-slate-200 pl-11 pr-4 outline-none focus:ring-2 focus:ring-emerald-500"
                     />
 
                 </div>
@@ -156,19 +172,41 @@ function AdminUsers() {
 
                         <tr>
 
-                            <th className="p-5 text-left">
+                            <th className="text-left p-5">
 
                                 User
 
                             </th>
 
-                            <th>Email</th>
+                            <th className="text-left">
 
-                            <th>Phone</th>
+                                Email
 
-                            <th>Role</th>
+                            </th>
 
-                            <th>Action</th>
+                            <th className="text-left">
+
+                                Phone
+
+                            </th>
+
+                            <th className="text-left">
+
+                                Current Role
+
+                            </th>
+
+                            <th className="text-left">
+
+                                Change Role
+
+                            </th>
+
+                            <th className="text-center">
+
+                                Delete
+
+                            </th>
 
                         </tr>
 
@@ -181,14 +219,33 @@ function AdminUsers() {
                             <tr>
 
                                 <td
-
-                                    colSpan="5"
-
-                                    className="p-10 text-center"
-
+                                    colSpan="6"
+                                    className="text-center py-14"
                                 >
 
-                                    Loading...
+                                    <div className="flex justify-center">
+
+                                        <RefreshCw
+                                            size={30}
+                                            className="animate-spin text-emerald-600"
+                                        />
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        ) : users.length === 0 ? (
+
+                            <tr>
+
+                                <td
+                                    colSpan="6"
+                                    className="text-center py-16 text-slate-500"
+                                >
+
+                                    No users found.
 
                                 </td>
 
@@ -196,115 +253,161 @@ function AdminUsers() {
 
                         ) : (
 
-                            users.map((user) => (
+                            users.map((user) => {
 
-                                <tr
+                                const isCurrentUser =
+                                    currentUser?._id === user._id;
 
-                                    key={user._id}
+                                return (
 
-                                    className="border-t"
+                                    <tr
+                                        key={user._id}
+                                        className="border-t hover:bg-slate-50 transition"
+                                    >
 
-                                >
+                                        {/* User */}
 
-                                    <td className="p-5">
+                                        <td className="p-5">
 
-                                        <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-4">
 
-                                            <div className="w-12 h-12 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold">
+                                                <div className="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-lg">
 
-                                                {
+                                                    {user.name.charAt(0).toUpperCase()}
 
-                                                    user.name[0]
+                                                </div>
 
+                                                <div>
+
+                                                    <h3 className="font-bold">
+
+                                                        {user.name}
+
+                                                    </h3>
+
+                                                    {isCurrentUser && (
+
+                                                        <span className="text-xs font-semibold text-emerald-600">
+
+                                                            You
+
+                                                        </span>
+
+                                                    )}
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+                                        {/* Email */}
+
+                                        <td>
+
+                                            {user.email}
+
+                                        </td>
+
+                                        {/* Phone */}
+
+                                        <td>
+
+                                            {user.phone}
+
+                                        </td>
+
+                                        {/* Current Role */}
+
+                                        <td>
+
+                                            <span
+                                                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${
+                                                    user.role === "admin"
+                                                        ? "bg-red-100 text-red-600"
+                                                        : "bg-emerald-100 text-emerald-700"
+                                                }`}
+                                            >
+
+                                                {user.role === "admin" ? (
+
+                                                    <ShieldCheck size={16} />
+
+                                                ) : (
+
+                                                    <User size={16} />
+
+                                                )}
+
+                                                {user.role}
+
+                                            </span>
+
+                                        </td>
+
+                                        {/* Change Role */}
+
+                                        <td>
+
+                                            <select
+                                                value={user.role}
+                                                disabled={isCurrentUser}
+                                                onChange={(e) =>
+                                                    handleRoleChange(
+                                                        user._id,
+                                                        e.target.value
+                                                    )
                                                 }
+                                                className={`rounded-xl px-4 py-2 outline-none ${
+                                                    isCurrentUser
+                                                        ? "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
+                                                        : "border border-slate-300 focus:ring-2 focus:ring-emerald-500"
+                                                }`}
+                                            >
 
-                                            </div>
+                                                <option value="user">
 
-                                            <div>
+                                                    User
 
-                                                <h3 className="font-bold">
+                                                </option>
 
-                                                    {user.name}
+                                                <option value="admin">
 
-                                                </h3>
+                                                    Admin
 
-                                            </div>
+                                                </option>
 
-                                        </div>
+                                            </select>
 
-                                    </td>
+                                        </td>
 
-                                    <td>
+                                        {/* Delete */}
 
-                                        {user.email}
+                                        <td className="text-center">
 
-                                    </td>
+                                            <button
+                                                disabled={isCurrentUser}
+                                                onClick={() =>
+                                                    handleDelete(user._id)
+                                                }
+                                                className={`transition ${
+                                                    isCurrentUser
+                                                        ? "text-slate-300 cursor-not-allowed"
+                                                        : "text-red-600 hover:text-red-800"
+                                                }`}
+                                            >
 
-                                    <td>
+                                                <Trash2 size={20} />
 
-                                        {user.phone}
+                                            </button>
 
-                                    </td>
+                                        </td>
 
-                                    <td>
+                                    </tr>
 
-                                        <span
+                                );
 
-                                            className={`px-4 py-2 rounded-full text-sm font-bold ${
-
-                                                user.role === "admin"
-
-                                                    ? "bg-red-100 text-red-600"
-
-                                                    : "bg-green-100 text-green-600"
-
-                                            }`}
-
-                                        >
-
-                                            {
-
-                                                user.role === "admin"
-
-                                                    ? <ShieldCheck size={16} className="inline mr-2" />
-
-                                                    : <User size={16} className="inline mr-2" />
-
-                                            }
-
-                                            {user.role}
-
-                                        </span>
-
-                                    </td>
-
-                                    <td>
-
-                                        <button
-
-                                            onClick={() =>
-
-                                                handleDelete(
-
-                                                    user._id
-
-                                                )
-
-                                            }
-
-                                            className="text-red-600 hover:text-red-800"
-
-                                        >
-
-                                            <Trash2 />
-
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-                            ))
+                            })
 
                         )}
 

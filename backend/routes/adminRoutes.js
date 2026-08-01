@@ -4,7 +4,7 @@ import authenticateUser from "../middleware/authMiddleware.js";
 import authorizeAdmin from "../middleware/adminMiddleware.js";
 
 import {
-    getAdminSummary, getAllUsers, deleteUser,
+    getAdminSummary, getAllUsers, deleteUser,updateUserRole,
     getAllPosts, deleteAnyPost, resolveAnyPost,
     getAllCategories, createCategory, updateCategory, deleteCategory,
 } from "../controllers/adminController.js";
@@ -30,6 +30,12 @@ router.delete(
     authenticateUser,
     authorizeAdmin,
     deleteUser
+);
+router.put(
+    "/users/:id/role",
+    authenticateUser,
+    authorizeAdmin,
+    updateUserRole
 );
 
 router.get(

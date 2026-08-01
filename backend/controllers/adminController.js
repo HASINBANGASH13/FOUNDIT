@@ -324,3 +324,63 @@ export const deleteCategory = asyncHandler(async (req, res) => {
     });
 
 });
+
+export const updateUserRole = asyncHandler(async (req, res) => {
+
+    const { role } = req.body;
+
+    if (!["user", "admin"].includes(role)) {
+
+        res.status(400);
+
+        throw new Error("Invalid role.");
+
+    }
+
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+
+        res.status(404);
+
+        throw new Error("User not found.");
+
+    }
+
+    // Prevent admin changing his own role
+
+    if (user._id.toString() === req.user._id.toString()) {
+
+        res.status(400);
+
+        throw new Error("You cannot change your own role.");
+
+    }
+
+    user.role = role;
+
+    await user.save();
+
+    res.status(200).json({
+
+        success: true,
+
+        message: `User role updated to ${role}.`,
+
+        data: {
+
+            _id: user._id,
+
+            name: user.name,
+
+            email: user.email,
+
+            phone: user.phone,
+
+            role: user.role,
+
+        },
+
+    });
+
+});
