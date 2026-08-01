@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-
 import { getPosts } from "../../api/postApi";
 import { getCategories } from "../../api/categoryApi";
-
 import PostCard from "./PostCard";
 import SearchFilter from "../home/SearchFilter";
 
