@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://foundit-api-7o9h.onrender.com",
+    baseURL: "https://foundit-api-7o9h.onrender.com/api",
     headers: {
         "Content-Type": "application/json",
     },
